@@ -6,5 +6,5 @@
     xmlns="http://www.springframework.org/schema/beans"
     xmlns:context="http://www.springframework.org/schema/context">
 
-    <context:component-scan base-package="com.lee.jwaf.log" />
+    <bean class="com.lee.jwaf.log.LoggerPostProcesor"/>
 </beans>

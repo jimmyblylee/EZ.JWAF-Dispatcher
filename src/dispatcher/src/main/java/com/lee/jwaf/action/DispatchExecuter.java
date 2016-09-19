@@ -194,36 +194,24 @@ public final class DispatchExecuter {
             public void doWith(Field field) throws IllegalArgumentException, IllegalAccessException {
                 if (field.getAnnotation(Context.class) != null) {
                     ReflectionUtils.makeAccessible(field);
-                    switch (field.getType().toString()) {
-                        case "com.lee.jwaf.context.ApplicationMap":
-                            ReflectionUtils.setField(field, bean, ActionContext.getContext().getApplication());
-                            break;
-                        case "com.lee.jwaf.context.ParameterMap":
-                            ReflectionUtils.setField(field, bean, ActionContext.getContext().getParameters());
-                            break;
-                        case "com.lee.jwaf.context.RequestMap":
-                            ReflectionUtils.setField(field, bean, ActionContext.getContext().getRequest());
-                            break;
-                        case "com.lee.jwaf.context.SessionMap":
-                            ReflectionUtils.setField(field, bean, ActionContext.getContext().getSession());
-                            break;
-                        case "com.lee.jwaf.dto.ApplicationDTO":
-                            ReflectionUtils.setField(field, bean, ActionContext.getContext().getApplicationDTO());
-                            break;
-                        case "com.lee.jwaf.dto.SessionDTO":
-                            ReflectionUtils.setField(field, bean, ActionContext.getContext().getSessionDTO());
-                            break;
-                        case "com.lee.jwaf.dto.WorkDTO":
-                            ReflectionUtils.setField(field, bean, ActionContext.getContext().getWorkDTO());
-                            break;
-                        case "javax.servlet.http.HttpServletRequest":
-                            ReflectionUtils.setField(field, bean, ActionContext.getContext().getServletRequest());
-                            break;
-                        case "javax.servlet.http.HttpServletResponse":
-                            ReflectionUtils.setField(field, bean, ActionContext.getContext().getServletResponse());
-                            break;
-                        default:
-                            break;
+                    if (field.getType().equals(ApplicationMap.class)) {
+                        ReflectionUtils.setField(field, bean, ActionContext.getContext().getApplication());
+                    } else if (field.getType().equals(ParameterMap.class)) {
+                        ReflectionUtils.setField(field, bean, ActionContext.getContext().getParameters());
+                    } else if (field.getType().equals(RequestMap.class)) {
+                        ReflectionUtils.setField(field, bean, ActionContext.getContext().getRequest());
+                    } else if (field.getType().equals(SessionMap.class)) {
+                        ReflectionUtils.setField(field, bean, ActionContext.getContext().getSession());
+                    } else if (field.getType().equals(ApplicationDTO.class)) {
+                        ReflectionUtils.setField(field, bean, ActionContext.getContext().getApplicationDTO());
+                    } else if (field.getType().equals(SessionDTO.class)) {
+                        ReflectionUtils.setField(field, bean, ActionContext.getContext().getSessionDTO());
+                    } else if (field.getType().equals(WorkDTO.class)) {
+                        ReflectionUtils.setField(field, bean, ActionContext.getContext().getWorkDTO());
+                    } else if (field.getType().equals(HttpServletRequest.class)) {
+                        ReflectionUtils.setField(field, bean, ActionContext.getContext().getServletRequest());
+                    } else if (field.getType().equals(HttpServletResponse.class)) {
+                        ReflectionUtils.setField(field, bean, ActionContext.getContext().getServletResponse());
                     }
                 }
             }
