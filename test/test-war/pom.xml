@@ -31,10 +31,20 @@
             <artifactId>jwaf-dispatcher</artifactId>
             <version>1.0.0.RELEASE</version>
         </dependency>
+        <!-- servlet for unittest -->
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+        </dependency>
         <!-- for mvc -->
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-context-support</artifactId>
+        </dependency>
+        <!-- logback -->
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
         </dependency>
         <!-- slf4j jcl to replace commons-logging -->
         <dependency>
@@ -56,6 +66,10 @@
             <groupId>org.hamcrest</groupId>
             <artifactId>hamcrest-library</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.seleniumhq.selenium</groupId>
+            <artifactId>selenium-java</artifactId>
+        </dependency>
     </dependencies>
     
     <build>
@@ -65,6 +79,27 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
+            </plugin>
+            <!-- The Surefire Plugin is used during the test phase of 
+                the build lifecycle to execute the unit tests of an application. ref: http://maven.apache.org/surefire/maven-surefire-plugin/ -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <test>noop</test>
+                    <argLine>-XX:-UseSplitVerifier</argLine>
+                    <skip>${maven-surefire-plugin.skip}</skip>
+                </configuration>
+            </plugin>
+            <!-- The Surefire Plugin is used during the test phase of 
+                the build lifecycle to execute the unit tests of an application. ref: http://maven.apache.org/surefire/maven-surefire-plugin/ -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-report-plugin</artifactId>
+                <configuration>
+                    <test>noop</test>
+                    <skipSurefireReport>${maven-surefire-plugin.skip}</skipSurefireReport>
+                </configuration>
             </plugin>
         </plugins>
     </build>
