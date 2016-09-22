@@ -15,7 +15,6 @@ import static org.junit.Assert.assertThat;
 
 import java.io.IOException;
 import java.net.URI;
-import java.util.Arrays;
 
 import org.apache.commons.io.Charsets;
 import org.apache.http.client.CookieStore;
@@ -32,8 +31,6 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import com.lee.util.StreamUtils;
 
 /**
  * ClassName : SessionControllerTest <br>
