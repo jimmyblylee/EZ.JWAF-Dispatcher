@@ -6,13 +6,13 @@
     xmlns="http://www.springframework.org/schema/security"
     xmlns:beans="http://www.springframework.org/schema/beans">
     
-    <http pattern="/mvc/dispatch" create-session="always" auto-config='true'>
+    <http pattern="/mvc/dispatch" auto-config='true'>
         <intercept-url pattern="/mvc/dispatch" access="permitAll" />
         <csrf disabled="true" />
     </http>
     
     <authentication-manager>
-        <authentication-provider user-service-ref="userDetailsService" />
+        <authentication-provider ref="authenticationManager" />
     </authentication-manager>
     
     <global-method-security pre-post-annotations="enabled" />
