@@ -32,6 +32,11 @@
         </dependency>
         <dependency>
             <groupId>com.lee.ez</groupId>
+            <artifactId>jwaf-message</artifactId>
+            <version>1.0.0.RELEASE</version>
+        </dependency>
+        <dependency>
+            <groupId>com.lee.ez</groupId>
             <artifactId>jwaf-token-api</artifactId>
             <version>1.0.0.RELEASE</version>
         </dependency>

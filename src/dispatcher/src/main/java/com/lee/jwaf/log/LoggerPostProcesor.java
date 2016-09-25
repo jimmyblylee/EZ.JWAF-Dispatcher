@@ -26,7 +26,8 @@ import com.lee.util.ReflectionUtils.FieldCallback;
 public final class LoggerPostProcesor implements BeanPostProcessor {
 
     /**
-     * @see org.springframework.beans.factory.config.BeanPostProcessor#postProcessAfterInitialization(java.lang.Object, java.lang.String)
+     * @see org.springframework.beans.factory.config.BeanPostProcessor#postProcessAfterInitialization(java.lang.Object,
+     *      java.lang.String)
      */
     @Override
     public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
@@ -34,7 +35,8 @@ public final class LoggerPostProcesor implements BeanPostProcessor {
     }
 
     /**
-     * @see org.springframework.beans.factory.config.BeanPostProcessor#postProcessBeforeInitialization(java.lang.Object, java.lang.String)
+     * @see org.springframework.beans.factory.config.BeanPostProcessor#postProcessBeforeInitialization(java.lang.Object,
+     *      java.lang.String)
      */
     @Override
     public Object postProcessBeforeInitialization(final Object bean, String beanName) throws BeansException {

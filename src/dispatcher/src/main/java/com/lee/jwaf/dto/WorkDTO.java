@@ -23,7 +23,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lee.jwaf.exception.AppException;
-import com.lee.jwaf.exception.ErrLevel;
+import com.lee.jwaf.exception.WarnException;
 
 /**
  * ClassName : WorkDTO <br>
@@ -55,15 +55,18 @@ public class WorkDTO extends AbstractMap<String, Object> implements Serializable
     }
 
     /**
-     * Returns the value to which the specified key is mapped, or {@code null} if this map contains no mapping for the key.
+     * Returns the value to which the specified key is mapped, or {@code null} if this map contains no mapping for the
+     * key.
      * 
      * <p>
-     * More formally, if this map contains a mapping from a key {@code k} to a value {@code v} such that {@code (key==null ? k==null : key.equals(k))} , then
-     * this method returns {@code v}; otherwise it returns {@code null}. (There can be at most one such mapping.)
+     * More formally, if this map contains a mapping from a key {@code k} to a value {@code v} such that
+     * {@code (key==null ? k==null : key.equals(k))} , then this method returns {@code v}; otherwise it returns
+     * {@code null}. (There can be at most one such mapping.)
      * 
      * <p>
-     * A return value of {@code null} does not <i>necessarily</i> indicate that the map contains no mapping for the key; it's also possible that the map
-     * explicitly maps the key to {@code null}. The {@link #containsKey containsKey} operation may be used to distinguish these two cases.
+     * A return value of {@code null} does not <i>necessarily</i> indicate that the map contains no mapping for the key;
+     * it's also possible that the map explicitly maps the key to {@code null}. The {@link #containsKey containsKey}
+     * operation may be used to distinguish these two cases.
      * 
      * @param <T> the type which the caller needs
      * @param key the key
@@ -76,12 +79,14 @@ public class WorkDTO extends AbstractMap<String, Object> implements Serializable
     }
 
     /**
-     * Associates the specified value with the specified key in this map. If the map previously contained a mapping for the key, the old value is replaced.
+     * Associates the specified value with the specified key in this map. If the map previously contained a mapping for
+     * the key, the old value is replaced.
      * 
      * @param key key with which the specified value is to be associated
      * @param value value to be associated with the specified key
-     * @return the previous value associated with <tt>key</tt>, or <tt>null</tt> if there was no mapping for <tt>key</tt>. (A <tt>null</tt> return can also
-     *         indicate that the map previously associated <tt>null</tt> with <tt>key</tt>.)
+     * @return the previous value associated with <tt>key</tt>, or <tt>null</tt> if there was no mapping for
+     *         <tt>key</tt>. (A <tt>null</tt> return can also indicate that the map previously associated <tt>null</tt>
+     *         with <tt>key</tt>.)
      */
     public Object put(String key, Object value) {
         return map.put(key, value);
@@ -193,10 +198,10 @@ public class WorkDTO extends AbstractMap<String, Object> implements Serializable
      * @return the exception itself with no change
      */
     public AppException setIssue(AppException exception) {
-        if (ErrLevel.ERR.equals(exception.getErrLevel())) {
-            this.setError(exception.getErrCode(), exception.getMessage());
-        } else {
+        if (exception instanceof WarnException) {
             this.setWarn(exception.getErrCode(), exception.getMessage());
+        } else {
+            this.setError(exception.getErrCode(), exception.getMessage());
         }
         return exception;
     }
@@ -313,7 +318,8 @@ public class WorkDTO extends AbstractMap<String, Object> implements Serializable
     public Map<String, Object> convertJsonToMapByKey(String key) {
         if (!containsKey(key)) { return null; }
         try {
-            return getTemplateObjectMapper().readValue(this.<String>get(key), new TypeReference<HashMap<String, Object>>() {});
+            return getTemplateObjectMapper().readValue(this.<String>get(key),
+                    new TypeReference<HashMap<String, Object>>() {});
         } catch (Exception e) {
             e.printStackTrace();
             return Collections.EMPTY_MAP;
@@ -354,7 +360,8 @@ public class WorkDTO extends AbstractMap<String, Object> implements Serializable
         if (!containsKey(key)) { return null; }
         ObjectMapper mapper = getTemplateObjectMapper();
         try {
-            return mapper.readValue(this.<String>get(key), mapper.getTypeFactory().constructCollectionType(List.class, type));
+            return mapper.readValue(this.<String>get(key),
+                    mapper.getTypeFactory().constructCollectionType(List.class, type));
         } catch (Exception e) {
             e.printStackTrace();
             return null;

@@ -23,7 +23,8 @@ import com.lee.jwaf.dto.WorkDTO;
 /**
  * ClassName : ActionContext <br>
  * Description : context of a dispatcher <br>
- * notice: action context is a container of session, parameter, etc. actionContext is a independent copy in every thread <br>
+ * notice: action context is a container of session, parameter, etc. actionContext is a independent copy in every thread
+ * <br>
  * Create Time : 2016-09-19 <br>
  * Create by : jimmyblylee@126.com
  */

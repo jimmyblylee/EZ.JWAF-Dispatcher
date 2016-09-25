@@ -29,7 +29,7 @@ import org.springframework.web.context.ServletContextAware;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lee.jwaf.dto.AppConstant;
 import com.lee.jwaf.exception.AppException;
-import com.lee.jwaf.exception.ErrLevel;
+import com.lee.jwaf.exception.WarnException;
 
 /**
  * ClassName : Dispatcher <br>
@@ -56,7 +56,8 @@ public class Dispatcher implements ServletContextAware {
      * @param servletResponse httpResponse
      */
     @RequestMapping(method = RequestMethod.POST)
-    public void post(@RequestParam Map<String, Object> workDTO, HttpServletRequest servletRequest, HttpServletResponse servletResponse) {
+    public void post(@RequestParam Map<String, Object> workDTO, HttpServletRequest servletRequest,
+            HttpServletResponse servletResponse) {
         // prepare context
         DispatchExecuter dispatchExecuter = new DispatchExecuter();
         PrepareOperations prepareOperations = new PrepareOperations(dispatchExecuter, servletContext);
@@ -68,14 +69,8 @@ public class Dispatcher implements ServletContextAware {
             // try to dispatch
             dispatchExecuter.serviceAction(servletRequest, servletResponse);
         } catch (Throwable e) {
-            if (e instanceof AppException) {
-                AppException se = (AppException) e;
-                if (ErrLevel.ERR.equals(se.getErrLevel())) {
-                    log.error("{}: {}", se.getErrCode(), se.getMessage());
-                    log.error("Error Stacking:", e);
-                } else {
-                    log.warn("{}: {}", se.getErrCode(), se.getMessage());
-                }
+            if (AppException.class.isInstance(e) && !WarnException.class.isInstance(e)) {
+                log.error("{}: {}", ((AppException) e).getErrCode(), ((AppException) e).getMessage());
             } else {
                 log.error("Error Stacking:", e);
             }
@@ -100,7 +95,8 @@ public class Dispatcher implements ServletContextAware {
      * @param servletResponse httpResponse
      */
     @RequestMapping(method = RequestMethod.GET)
-    public void get(@RequestParam Map<String, Object> workDTO, HttpServletRequest servletRequest, HttpServletResponse servletResponse) {
+    public void get(@RequestParam Map<String, Object> workDTO, HttpServletRequest servletRequest,
+            HttpServletResponse servletResponse) {
         post(workDTO, servletRequest, servletResponse);
     }
 

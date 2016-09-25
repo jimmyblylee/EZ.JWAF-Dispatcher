@@ -44,15 +44,18 @@ public class ApplicationDTO extends AbstractMap<String, Object> implements Seria
     }
 
     /**
-     * Returns the value to which the specified key is mapped, or {@code null} if this map contains no mapping for the key.
+     * Returns the value to which the specified key is mapped, or {@code null} if this map contains no mapping for the
+     * key.
      * 
      * <p>
-     * More formally, if this map contains a mapping from a key {@code k} to a value {@code v} such that {@code (key==null ? k==null : key.equals(k))} , then
-     * this method returns {@code v}; otherwise it returns {@code null}. (There can be at most one such mapping.)
+     * More formally, if this map contains a mapping from a key {@code k} to a value {@code v} such that
+     * {@code (key==null ? k==null : key.equals(k))} , then this method returns {@code v}; otherwise it returns
+     * {@code null}. (There can be at most one such mapping.)
      * 
      * <p>
-     * A return value of {@code null} does not <i>necessarily</i> indicate that the map contains no mapping for the key; it's also possible that the map
-     * explicitly maps the key to {@code null}. The {@link #containsKey containsKey} operation may be used to distinguish these two cases.
+     * A return value of {@code null} does not <i>necessarily</i> indicate that the map contains no mapping for the key;
+     * it's also possible that the map explicitly maps the key to {@code null}. The {@link #containsKey containsKey}
+     * operation may be used to distinguish these two cases.
      * 
      * @param <T> the type which the caller needs
      * @param key the key
@@ -65,12 +68,14 @@ public class ApplicationDTO extends AbstractMap<String, Object> implements Seria
     }
 
     /**
-     * Associates the specified value with the specified key in this map. If the map previously contained a mapping for the key, the old value is replaced.
+     * Associates the specified value with the specified key in this map. If the map previously contained a mapping for
+     * the key, the old value is replaced.
      * 
      * @param key key with which the specified value is to be associated
      * @param value value to be associated with the specified key
-     * @return the previous value associated with <tt>key</tt>, or <tt>null</tt> if there was no mapping for <tt>key</tt>. (A <tt>null</tt> return can also
-     *         indicate that the map previously associated <tt>null</tt> with <tt>key</tt>.)
+     * @return the previous value associated with <tt>key</tt>, or <tt>null</tt> if there was no mapping for
+     *         <tt>key</tt>. (A <tt>null</tt> return can also indicate that the map previously associated <tt>null</tt>
+     *         with <tt>key</tt>.)
      */
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public Object put(String key, Object value) {

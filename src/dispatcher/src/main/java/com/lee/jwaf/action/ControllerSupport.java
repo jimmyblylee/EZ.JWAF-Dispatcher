@@ -27,7 +27,8 @@ import com.lee.jwaf.log.Log;
  * Create Time : 2016-09-19 <br>
  * Create by : jimmyblylee@126.com
  */
-public abstract class ControllerSupport implements WorkDTOAware, SessionDTOAware, ServletRequestAware, ServletResponseAware {
+public abstract class ControllerSupport
+        implements WorkDTOAware, SessionDTOAware, ServletRequestAware, ServletResponseAware {
 
     protected SessionDTO sessionDTO;
     protected WorkDTO workDTO;

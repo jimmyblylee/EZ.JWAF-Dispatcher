@@ -131,7 +131,8 @@ public class ApplicationMap extends AbstractMap<String, Object> implements Seria
     }
 
     /**
-     * Returns the servlet context attribute or init parameter based on the given key. If the entry is not found, <tt>null</tt> is returned.
+     * Returns the servlet context attribute or init parameter based on the given key. If the entry is not found,
+     * <tt>null</tt> is returned.
      * 
      * @param key the entry key.
      * @return the servlet context attribute or init parameter or <tt>null</tt> if the entry is not found.

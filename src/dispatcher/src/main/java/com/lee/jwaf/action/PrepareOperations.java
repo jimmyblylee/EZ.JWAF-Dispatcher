@@ -43,7 +43,8 @@ public final class PrepareOperations {
      * @param workDTO the Map of parameters
      * @return the ActionContext
      */
-    public ActionContext createActionContext(HttpServletRequest request, HttpServletResponse response, Map<String, Object> workDTO) {
+    public ActionContext createActionContext(HttpServletRequest request, HttpServletResponse response,
+            Map<String, Object> workDTO) {
         ActionContext ctx;
         ActionContext oldContext = ActionContext.getContext();
         if (oldContext != null) {

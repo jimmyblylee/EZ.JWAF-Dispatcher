@@ -8,6 +8,8 @@
  */
 package com.lee.jwaf.action;
 
+import static com.lee.jwaf.message.Messages.Msg;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -22,6 +24,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.aop.support.AopUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
+import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.context.ContextLoader;
@@ -45,8 +48,8 @@ import com.lee.jwaf.dto.bind.ApplicationDTOAware;
 import com.lee.jwaf.dto.bind.SessionDTOAware;
 import com.lee.jwaf.dto.bind.WorkDTOAware;
 import com.lee.jwaf.exception.AppException;
-import com.lee.jwaf.exception.ErrLevel;
-import com.lee.jwaf.message.Messages;
+import com.lee.jwaf.exception.WarnException;
+import com.lee.util.ObjectUtils;
 import com.lee.util.ReflectionUtils;
 import com.lee.util.ReflectionUtils.FieldCallback;
 import com.lee.util.StringUtils;
@@ -60,6 +63,7 @@ import com.lee.util.StringUtils;
 public final class DispatchExecuter {
 
     private static ThreadLocal<DispatchExecuter> instance = new ThreadLocal<DispatchExecuter>();
+    private final static String BUNDLE_NAME = "dispatcher";
 
     /**
      * Description : dispatch the request to the target controller by given parameters<br>
@@ -85,27 +89,45 @@ public final class DispatchExecuter {
         Method method = null;
 
         try {
-            if (StringUtils.isEmpty(controllerName)) { throw dto
-                    .setIssue(new AppException("ERR_FRAMEWORK_001", ErrLevel.WARN, Messages.getMsg("ERR_FRAMEWORK_CONTROLLERID_NULL"))); }
+            if (StringUtils.isEmpty(controllerName)) {
+                AppException ex = createEx("ERR_DISPATCHER_001/DispatchExecuter.controllerIdEmpty", null);
+                throw dto.setIssue(ex);
+            }
             bean = ContextLoader.getCurrentWebApplicationContext().getBean(controllerName);
-            if (bean == null) { throw dto
-                    .setIssue(new AppException("ERR_FRAMEWORK_001", ErrLevel.WARN, Messages.getMsg("ERR_FRAMEWORK_BEAN_NULL"), controllerName)); }
-            if (bean.getClass().getAnnotation(Controller.class) == null) { throw dto
-                    .setIssue(new AppException("ERR_FRAMEWORK_001", ErrLevel.WARN, Messages.getMsg("ERR_FRAMEWORK_NONE_CONTROLLER"), controllerName)); }
-            if (AopUtils.isAopProxy(bean)) { throw dto
-                    .setIssue(new AppException("ERR_FRAMEWORK_001", ErrLevel.WARN, Messages.getMsg("ERR_FRAMEWORK_PROXY_CONTROLLER"), controllerName)); }
+            if (ObjectUtils.isEmpty(bean)) {
+                AppException ex = createEx("ERR_DISPATCHER_001/DispatchExecuter.targetBeanNull", null, controllerName);
+                throw dto.setIssue(ex);
+            }
+            if (AnnotationUtils.isAnnotationInherited(Controller.class, bean.getClass())) {
+                AppException ex = createEx("ERR_DISPATCHER_001/DispatchExecuter.targetBeanNotController", null,
+                        controllerName);
+                throw dto.setIssue(ex);
+            }
+            if (AopUtils.isAopProxy(bean)) {
+                AppException ex = createEx("ERR_DISPATCHER_001/DispatchExecuter.targetControllerIsProxy", null,
+                        controllerName);
+                throw dto.setIssue(ex);
+            }
         } catch (NoSuchBeanDefinitionException e) {
-            throw dto.setIssue(new AppException("ERR_FRAMEWORK_001", ErrLevel.WARN, Messages.getMsg("ERR_FRAMEWORK_CONTROLLER_NULL"), e, controllerName));
+            AppException ex = createEx("ERR_DISPATCHER_001/DispatchExecuter.canNotFindController", e, controllerName);
+            throw dto.setIssue(ex);
         } catch (BeansException | IllegalArgumentException e) {
-            throw dto.setIssue(new AppException("ERR_FRAMEWORK_001", ErrLevel.ERR, Messages.getMsg("ERR_FRAMEWORK_CONTROLLER_CREATE"), e, controllerName));
+            AppException ex = createEx("ERR_DISPATCHER_001/DispatchExecuter.canNotCreateController", e, controllerName);
+            throw dto.setIssue(ex);
         }
 
         try {
-            if (StringUtils.isEmpty(methodName)) { throw dto.setIssue(new AppException("ERR_FRAMEWORK_001", Messages.getMsg("ERR_FRAMEWORK_METHODID_NULL"))); }
+            if (StringUtils.isEmpty(methodName)) {
+                AppException ex = createEx("ERR_DISPATCHER_001/DispatchExecuter.emptyMethodName", null);
+                throw dto.setIssue(ex);
+            }
             method = bean.getClass().getMethod(methodName, new Class<?>[0]);
         } catch (SecurityException | NullPointerException | NoSuchMethodException e) {
-            throw dto.setIssue(new AppException("ERR_FRAMEWORK_001", ErrLevel.WARN, Messages.getMsg("ERR_FRAMEWORK_METHOD_NULL"), e, methodName,
-                    bean.getClass().getName()));
+            String msgCode = "ERR_DISPATCHER_001/DispatchExecuter.canNotFindMethod";
+            String errCode = msgCode.substring(0, msgCode.indexOf("/"));
+            String msg = Msg.msg(BUNDLE_NAME, msgCode, new Object[] { methodName, bean.getClass().getName() });
+            AppException ex = new WarnException(errCode, msg, e);
+            throw dto.setIssue(ex);
         }
         // bind data to target bean
         bindData(bean);
@@ -119,23 +141,33 @@ public final class DispatchExecuter {
             if (realCause instanceof AppException) {
                 AppException se = (AppException) realCause;
                 dto.setIssue(se);
-                if (ErrLevel.ERR.equals(se.getErrLevel())) {
-                    throw se;
-                } else {
+                if (se instanceof WarnException) {
                     log.warn(se.getMessage());
+                } else {
+                    throw se;
                 }
             } else if (realCause instanceof AccessDeniedException) {
-                dto.setWarn("ERR_SECURITY_001", Messages.getMsg("ERR_ACCESS_DENIED"));
-                log.warn(Messages.getMsg("ERR_ACCESS_DENIED"));
+                String errCode = "ERR_DISPATCHER_002", msgCode = errCode + "/DispatchExecuter.accessDenied";
+                dto.setWarn(errCode, Msg.msg(BUNDLE_NAME, msgCode, null));
+                log.warn(Msg.msg(BUNDLE_NAME, "ERR_ACCESS_DENIED", null));
             } else {
-                throw dto.setIssue(new AppException("ERR_UNKNOWN_001", Messages.getMsg("ERR_CONTROLLER_BIZ_UNKNOWN_FAILURE"), realCause,
-                        bean.getClass().getName(), method.getName()));
+                AppException ex = createEx("ERR_DISPATCHER_001/DispatchExecuter.unkownBzIssue", realCause,
+                        bean.getClass().getName(), method.getName());
+                throw dto.setIssue(ex);
             }
         } catch (Exception e) {
-            throw new AppException("ERR_UNKNOWN_001", Messages.getMsg("ERR_CONTROLLER_INVOKE_FAILURE"), e, bean.getClass().getName(), method.getName());
+            AppException ex = createEx("ERR_DISPATCHER_001/DispatchExecuter.canNotInvok", null,
+                    bean.getClass().getName(), method.getName());
+            throw ex;
         } finally {
             log.debug(method.getName() + " end");
         }
+    }
+
+    private AppException createEx(String msgCode, Throwable e, Object... arg) {
+        String errCode = msgCode.substring(0, msgCode.indexOf("/"));
+        String msg = Msg.msg(BUNDLE_NAME, msgCode, arg);
+        return e == null ? new AppException(errCode, msg) : new AppException(errCode, msg, e);
     }
 
     /**
@@ -229,8 +261,8 @@ public final class DispatchExecuter {
      * @param springRequestMap the springRequestMap
      * @return the ActionContext
      */
-    public ActionContext createActionContext(HttpServletRequest request, HttpServletResponse response, ServletContext context,
-            Map<String, Object> springRequestMap) {
+    public ActionContext createActionContext(HttpServletRequest request, HttpServletResponse response,
+            ServletContext context, Map<String, Object> springRequestMap) {
         ActionContext extraContext = new ActionContext();
         // orginal data
         ApplicationMap applicationMap = new ApplicationMap(context);
