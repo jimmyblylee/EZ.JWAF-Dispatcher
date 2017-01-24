@@ -1,11 +1,22 @@
-/**
- * Project Name : jwaf-dispatcher <br>
- * File Name : ActionContext.java <br>
- * Package Name : com.lee.jwaf.context <br>
- * Create Time : 2016-09-19 <br>
- * Create by : jimmyblylee@126.com <br>
- * Copyright © 2006, 2016, Jimmybly Lee. All rights reserved.
- */
+/* ***************************************************************************
+ * EZ.JWAF/EZ.JCWAP: Easy series Production.
+ * Including JWAF(Java-based Web Application Framework)
+ * and JCWAP(Java-based Customized Web Application Platform).
+ * Copyright (C) 2016-2017 the original author or authors.
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of MIT License as published by
+ * the Free Software Foundation;
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the MIT License for more details.
+ *
+ * You should have received a copy of the MIT License along
+ * with this library; if not, write to the Free Software Foundation.
+ * ***************************************************************************/
+
 package com.lee.jwaf.context;
 
 import java.io.Serializable;
@@ -26,7 +37,7 @@ import com.lee.jwaf.dto.WorkDTO;
  * notice: action context is a container of session, parameter, etc. actionContext is a independent copy in every thread
  * <br>
  * Create Time : 2016-09-19 <br>
- * Create by : jimmyblylee@126.com
+ * @author jimmyblylee@126.com
  */
 public class ActionContext implements Serializable {
 
@@ -39,34 +50,55 @@ public class ActionContext implements Serializable {
      * Create by : jimmyblylee@126.com
      */
     private enum CNS {
-        /** description: {@linkplain ApplicationMap} */
+        /** Description: {@linkplain ApplicationMap}. */
         APPLICATION,
-        /** description: {@link ParameterMap} */
+        /** Description: {@link ParameterMap}. */
         PARAMETER,
-        /** description: {@link RequestMap} */
+        /** Description: {@link RequestMap}. */
         REQUEST,
-        /** description: {@link SessionMap} */
+        /** Description: {@link SessionMap}. */
         SESSION,
-        /** description: {@linkplain ApplicationDTO} */
+        /** Description: {@linkplain ApplicationDTO}. */
         APPLICATION_DTO,
-        /** description: {@link WorkDTO} */
+        /** Description: {@link WorkDTO}. */
         WORK_DTO,
-        /** description: {@link SessionDTO} */
+        /** Description: {@link SessionDTO}. */
         SESSION_DTO,
-        /** description: servletRequest {@link HttpServletRequest} */
+        /** Description: servletRequest {@link HttpServletRequest}. */
         SERVLET_REQUEST,
-        /** description: servletResponse {@link HttpServletResponse} */
+        /** Description: servletResponse {@link HttpServletResponse}. */
         SERVLET_RESPONSE,
-        /** description: LOCALE */
+        /** Description: LOCALE. */
         LOCALE;
 
+        /**
+         * @return the name by lower case.
+         */
         public String toString() {
             return name().toLowerCase();
-        };
+        }
     }
 
-    /** @Fields actionContext: action context in the current thread */
-    private static ThreadLocal<ActionContext> actionContext = new ThreadLocal<ActionContext>();
+    /** Description: actionContext: action context in the current thread. */
+    private static ThreadLocal<ActionContext> actionContext = new ThreadLocal<>();
+
+    /** Action context. */
+    private Map<String, Object> context;
+
+    /**
+     *  Default constructor.
+     */
+    public ActionContext() {
+        this.context = new HashMap<>();
+    }
+
+    /**
+     * Default constructor.
+     * @param context the context
+     */
+    public ActionContext(Map<String, Object> context) {
+        this.context = context;
+    }
 
     /**
      * Description : set action context into the current thread <br>
@@ -87,18 +119,7 @@ public class ActionContext implements Serializable {
      * @return this context in current thread
      */
     public static ActionContext getContext() {
-        return (ActionContext) actionContext.get();
-    }
-
-    /** action context */
-    private Map<String, Object> context;
-
-    public ActionContext(Map<String, Object> context) {
-        this.context = context;
-    }
-
-    public ActionContext() {
-        this.context = new HashMap<String, Object>();
+        return actionContext.get();
     }
 
     /**
@@ -328,8 +349,9 @@ public class ActionContext implements Serializable {
      *
      * @return if the local is null, will return {@link java.util.Locale#getDefault()} as default
      */
+    @SuppressWarnings("unused")
     public Locale getLocale() {
-        Locale locale = (Locale) get(CNS.LOCALE.toString());
+        Locale locale = get(CNS.LOCALE.toString());
         if (locale == null) {
             locale = Locale.getDefault();
             setLocale(locale);
@@ -344,7 +366,6 @@ public class ActionContext implements Serializable {
      *
      * @param <T> the type which the caller needs
      * @param key the key
-     * @return the value
      * @return the value that was found using the key or <tt>null</tt> if the key was not found.
      */
     @SuppressWarnings("unchecked")
@@ -360,6 +381,7 @@ public class ActionContext implements Serializable {
      * @param key key
      * @param value value
      */
+    @SuppressWarnings("WeakerAccess")
     public void put(String key, Object value) {
         context.put(key, value);
     }

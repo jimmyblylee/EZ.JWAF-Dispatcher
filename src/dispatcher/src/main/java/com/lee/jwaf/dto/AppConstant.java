@@ -1,18 +1,30 @@
-/**
- * Project Name : jwaf-dispatcher <br>
- * File Name : AppConstant.java <br>
- * Package Name : com.lee.jwaf.dto <br>
- * Create Time : 2016-09-18 <br>
- * Create by : jimmyblylee@126.com <br>
- * Copyright © 2006, 2016, Jimmybly Lee. All rights reserved.
- */
+/* ***************************************************************************
+ * EZ.JWAF/EZ.JCWAP: Easy series Production.
+ * Including JWAF(Java-based Web Application Framework)
+ * and JCWAP(Java-based Customized Web Application Platform).
+ * Copyright (C) 2016-2017 the original author or authors.
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of MIT License as published by
+ * the Free Software Foundation;
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the MIT License for more details.
+ *
+ * You should have received a copy of the MIT License along
+ * with this library; if not, write to the Free Software Foundation.
+ * ***************************************************************************/
+
 package com.lee.jwaf.dto;
 
 /**
  * ClassName : AppConstant <br>
  * Description : constant of UI Layer and Controller Layer <br>
  * Create Time : 2016-09-18 <br>
- * Create by : jimmyblylee@126.com
+ *
+ * @author jimmyblylee@126.com
  */
 public interface AppConstant {
 
@@ -22,55 +34,59 @@ public interface AppConstant {
      * Create Time : 2016-09-18 <br>
      * Create by : jimmyblylee@126.com
      */
-    public enum CNS_SERVER {
-        /** key of controller name */
+    enum CNS_SERVER {
+        /** Key of controller name. */
         CONTROLLER,
-        /** key of method name */
+        /** Key of method name. */
         METHOD;
 
         @Override
         public String toString() {
             return this.name().toLowerCase();
-        };
-    };
+        }
+    }
 
     /**
      * ClassName : CNS_REQUEST <br>
      * Description : request flag <br>
      * Create Time : Apr 12, 2016 <br>
      * Create by : xiangyu_li@asdc.com.cn <br>
-     *
      */
-    public enum CNS_REQUEST {
-        /** key of result in response */
+    enum CNS_REQUEST {
+        /** Key of result in response. */
         RESULT,
-        /** if this code is in the workDTO, the controller will control the output stream it self */
+        /** If this code is in the workDTO, the controller will control the output stream it self. */
         LET_ME_CTRL_THE_STREAM,
-        /** SUCCESS flag */
+        /** SUCCESS flag. */
         SUCCESS,
-        /** error code */
+        /** Error code. */
         ERR_CODE,
-        /** error level warning or error */
+        /** Error level warning or error. */
         ERR_LEVEL,
-        /** error message */
+        /** Error message. */
         ERR_MESSAGE;
 
-        public final static String CNS_ERROR = "error";
-        public final static String CNS_WARNING = "warning";
+        /** Flag for error. */
+        public static final String CNS_ERROR = "error";
+        /** Flag for waring. */
+        public static final String CNS_WARNING = "warning";
 
         @Override
         public String toString() {
+            String result = this.name().toLowerCase();
             if (this.equals(SUCCESS)) {
-                return "success";
+                result = "success";
             } else if (this.equals(ERR_MESSAGE)) {
-                return "errMsg";
+                result = "errMsg";
             } else if (this.equals(ERR_CODE)) {
-                return "errCode";
+                result = "errCode";
             } else if (this.equals(ERR_LEVEL)) {
-                return "errLevel";
-            } else if (this.equals(LET_ME_CTRL_THE_STREAM)) { return "selfControledStream"; }
-            return this.name().toLowerCase();
-        };
+                result = "errLevel";
+            } else if (this.equals(LET_ME_CTRL_THE_STREAM)) {
+                result = "selfControlledStream";
+            }
+            return result;
+        }
     }
 
     /**
@@ -79,15 +95,15 @@ public interface AppConstant {
      * Create Time : 2016-09-18 <br>
      * Create by : jimmyblylee@126.com
      */
-    public enum CNS_FILE {
-        /** key of file request */
+    enum CNS_FILE {
+        /** Key of file request. */
         CNS_FILE_KEY;
 
         @Override
         public String toString() {
             return this.name().toLowerCase();
-        };
-    };
+        }
+    }
 
     /**
      * ClassName : CNS_LIST_REQUEST <br>
@@ -95,20 +111,20 @@ public interface AppConstant {
      * Create Time : 2016-09-18 <br>
      * Create by : jimmyblylee@126.com
      */
-    public enum CNS_LIST_REQUEST {
-        /** key of ids to remove, which are split by comma */
+    enum CNS_LIST_REQUEST {
+        /** Key of ids to remove, which are split by comma. */
         REMOVE_IDS,
-        /** key of total in response */
+        /** Key of total in response. */
         TOTAL,
-        /** key of page start in request */
+        /** Key of page start in request. */
         START,
-        /** key of page limit in request */
+        /** Key of page limit in request. */
         LIMIT;
 
         @Override
         public String toString() {
             return this.name().toLowerCase();
-        };
+        }
     }
 
     /**
@@ -117,13 +133,13 @@ public interface AppConstant {
      * Create Time: Oct 5, 2015 <br>
      * Create by: xiangyu_li@asdc.com.cn
      */
-    public enum CNS_SESSIONDTO {
-        /** key of token */
+    enum CNS_SESSIONDTO {
+        /** Key of token. */
         TOKEN_IN_SESSION;
 
         @Override
         public String toString() {
             return this.name().toLowerCase();
-        };
+        }
     }
 }

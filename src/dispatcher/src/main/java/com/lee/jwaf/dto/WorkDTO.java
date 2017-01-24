@@ -1,13 +1,25 @@
-/**
- * Project Name : jwaf-dispatcher <br>
- * File Name : WorkDTO.java <br>
- * Package Name : com.lee.jwaf.dto <br>
- * Create Time : 2016-09-18 <br>
- * Create by : jimmyblylee@126.com <br>
- * Copyright © 2006, 2016, Jimmybly Lee. All rights reserved.
- */
+/* ***************************************************************************
+ * EZ.JWAF/EZ.JCWAP: Easy series Production.
+ * Including JWAF(Java-based Web Application Framework)
+ * and JCWAP(Java-based Customized Web Application Platform).
+ * Copyright (C) 2016-2017 the original author or authors.
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of MIT License as published by
+ * the Free Software Foundation;
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the MIT License for more details.
+ *
+ * You should have received a copy of the MIT License along
+ * with this library; if not, write to the Free Software Foundation.
+ * ***************************************************************************/
+
 package com.lee.jwaf.dto;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.AbstractMap;
 import java.util.Collections;
@@ -29,17 +41,19 @@ import com.lee.jwaf.exception.WarnException;
  * ClassName : WorkDTO <br>
  * Description : work DTO in the current thread <br>
  * Create Time : 2016-09-18 <br>
- * Create by : jimmyblylee@126.com
+ *
+ * @author jimmyblylee@126.com
  */
 public class WorkDTO extends AbstractMap<String, Object> implements Serializable, AppConstant {
 
     private static final long serialVersionUID = 9046766399363299368L;
 
-    protected Map<String, Object> map;
+    /** Real value storage map. */
+    private Map<String, Object> map;
 
     /**
      * Create a new instance of WorkDTO.
-     * 
+     *
      * @param dto the dto
      */
     public WorkDTO(Map<String, Object> dto) {
@@ -57,17 +71,16 @@ public class WorkDTO extends AbstractMap<String, Object> implements Serializable
     /**
      * Returns the value to which the specified key is mapped, or {@code null} if this map contains no mapping for the
      * key.
-     * 
-     * <p>
-     * More formally, if this map contains a mapping from a key {@code k} to a value {@code v} such that
+     *
+     * <p>More formally, if this map contains a mapping from a key {@code k} to a value {@code v} such that
      * {@code (key==null ? k==null : key.equals(k))} , then this method returns {@code v}; otherwise it returns
      * {@code null}. (There can be at most one such mapping.)
-     * 
-     * <p>
-     * A return value of {@code null} does not <i>necessarily</i> indicate that the map contains no mapping for the key;
+     *
+     * <p>A return value of {@code null} does not <i>necessarily</i> indicate
+     * that the map contains no mapping for the key;
      * it's also possible that the map explicitly maps the key to {@code null}. The {@link #containsKey containsKey}
      * operation may be used to distinguish these two cases.
-     * 
+     *
      * @param <T> the type which the caller needs
      * @param key the key
      * @return the value
@@ -81,12 +94,12 @@ public class WorkDTO extends AbstractMap<String, Object> implements Serializable
     /**
      * Associates the specified value with the specified key in this map. If the map previously contained a mapping for
      * the key, the old value is replaced.
-     * 
-     * @param key key with which the specified value is to be associated
+     *
+     * @param key   key with which the specified value is to be associated
      * @param value value to be associated with the specified key
      * @return the previous value associated with <tt>key</tt>, or <tt>null</tt> if there was no mapping for
-     *         <tt>key</tt>. (A <tt>null</tt> return can also indicate that the map previously associated <tt>null</tt>
-     *         with <tt>key</tt>.)
+     *     <tt>key</tt>. (A <tt>null</tt> return can also indicate that the map previously associated <tt>null</tt>
+     *     with <tt>key</tt>.)
      */
     public Object put(String key, Object value) {
         return map.put(key, value);
@@ -97,7 +110,7 @@ public class WorkDTO extends AbstractMap<String, Object> implements Serializable
      * @see java.util.AbstractMap#putAll(java.util.Map)
      */
     @Override
-    public void putAll(Map<? extends String, ? extends Object> m) {
+    public void putAll(Map<? extends String, ?> m) {
         map.putAll(m);
     }
 
@@ -120,6 +133,7 @@ public class WorkDTO extends AbstractMap<String, Object> implements Serializable
     }
 
     // ***************** dispatcher *******************//
+
     /**
      * Description : get controller name <br>
      * Create Time: 2016-09-18 <br>
@@ -135,7 +149,6 @@ public class WorkDTO extends AbstractMap<String, Object> implements Serializable
      * Description : remove the controller name parameter from dto <br>
      * Create Time: 2016-09-18 <br>
      * Create by : jimmyblylee@126.com <br>
-     *
      */
     public void removeController() {
         remove(CNS_SERVER.CONTROLLER.toString());
@@ -156,13 +169,13 @@ public class WorkDTO extends AbstractMap<String, Object> implements Serializable
      * Description : remove the method name parameter from dto <br>
      * Create Time: 2016-09-18 <br>
      * Create by : jimmyblylee@126.com <br>
-     *
      */
     public void removeMethod() {
         remove(CNS_SERVER.METHOD.toString());
     }
 
     // ***************** request *******************//
+
     /**
      * Description : set result list in response <br>
      * Create Time: 2016-09-18 <br>
@@ -170,6 +183,7 @@ public class WorkDTO extends AbstractMap<String, Object> implements Serializable
      *
      * @param result the result
      */
+    @SuppressWarnings("unused")
     public void setResult(Object result) {
         put(CNS_REQUEST.RESULT.toString(), result);
     }
@@ -180,8 +194,9 @@ public class WorkDTO extends AbstractMap<String, Object> implements Serializable
      * Create by : jimmyblylee@126.com <br>
      *
      * @param code the error code
-     * @param msg the error message
+     * @param msg  the error message
      */
+    @SuppressWarnings("WeakerAccess")
     public void setError(String code, String msg) {
         this.put(CNS_REQUEST.SUCCESS.toString(), false);
         this.put(CNS_REQUEST.ERR_CODE.toString(), code);
@@ -212,7 +227,7 @@ public class WorkDTO extends AbstractMap<String, Object> implements Serializable
      * Create by : jimmyblylee@126.com <br>
      *
      * @param code the error code
-     * @param msg the error message
+     * @param msg  the error message
      */
     public void setWarn(String code, String msg) {
         this.put(CNS_REQUEST.SUCCESS.toString(), false);
@@ -225,24 +240,26 @@ public class WorkDTO extends AbstractMap<String, Object> implements Serializable
      * Description : set flag that dispatcher won't control the response stream <br>
      * Create Time: 2016-09-18 <br>
      * Create by : jimmyblylee@126.com <br>
-     *
      */
+    @SuppressWarnings("unused")
     public void letMeControlTheResponseStream() {
         this.put(CNS_REQUEST.LET_ME_CTRL_THE_STREAM.toString(), true);
     }
 
     // ***************** file *******************//
+
     /**
      * Description : set file result <br>
      * Create Time: Apr 12, 2016 <br>
      * Create by : xiangyu_li@asdc.com.cn <br>
      *
-     * @param fileId the file id
+     * @param fileId   the file id
      * @param fileName the name of file
-     * @param url the file url
+     * @param url      the file url
      */
+    @SuppressWarnings("unused")
     public void setFileResultSuccess(String fileId, String fileName, String url) {
-        HashMap<String, String> fileInfo = new HashMap<String, String>();
+        final Map<String, String> fileInfo = new HashMap<>();
         fileInfo.put("fileId", fileId);
         fileInfo.put("fileName", fileName);
         fileInfo.put("url", url);
@@ -257,11 +274,13 @@ public class WorkDTO extends AbstractMap<String, Object> implements Serializable
      *
      * @return file key
      */
+    @SuppressWarnings("unused")
     public String getFileKey() {
         return get(CNS_FILE.CNS_FILE_KEY.toString());
     }
 
     // ***************** list request *******************//
+
     /**
      * Description : set result totle size in response <br>
      * Create Time: 2016-09-18 <br>
@@ -269,6 +288,7 @@ public class WorkDTO extends AbstractMap<String, Object> implements Serializable
      *
      * @param totle count of list result
      */
+    @SuppressWarnings("unused")
     public void setTotle(int totle) {
         put(CNS_LIST_REQUEST.TOTAL.toString(), totle);
     }
@@ -280,6 +300,7 @@ public class WorkDTO extends AbstractMap<String, Object> implements Serializable
      *
      * @return start num of list request
      */
+    @SuppressWarnings("unused")
     public int getStart() {
         return getInteger(CNS_LIST_REQUEST.START.toString());
     }
@@ -291,6 +312,7 @@ public class WorkDTO extends AbstractMap<String, Object> implements Serializable
      *
      * @return limit num of list request
      */
+    @SuppressWarnings("unused")
     public int getLimit() {
         return getInteger(CNS_LIST_REQUEST.LIMIT.toString());
     }
@@ -302,6 +324,7 @@ public class WorkDTO extends AbstractMap<String, Object> implements Serializable
      *
      * @return the remove ids by string splited by comma
      */
+    @SuppressWarnings("unused")
     public String getRemoveIds() {
         return this.get(CNS_LIST_REQUEST.REMOVE_IDS.toString());
     }
@@ -314,36 +337,39 @@ public class WorkDTO extends AbstractMap<String, Object> implements Serializable
      * @param key the key
      * @return map result
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "unused"})
     public Map<String, Object> convertJsonToMapByKey(String key) {
-        if (!containsKey(key)) { return null; }
-        try {
-            return getTemplateObjectMapper().readValue(this.<String>get(key),
-                    new TypeReference<HashMap<String, Object>>() {});
-        } catch (Exception e) {
-            e.printStackTrace();
-            return Collections.EMPTY_MAP;
+        if (containsKey(key)) {
+            try {
+                return getTemplateObjectMapper().readValue(this.<String>get(key),
+                    new TypeReference<HashMap<String, Object>>() { });
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
         }
+        return Collections.EMPTY_MAP;
     }
 
     /**
      * Description : convert the json in workDTO to given type <br>
      * Create Time: Apr 12, 2016 <br>
      * Create by : xiangyu_li@asdc.com.cn <br>
-     * 
-     * @param <T> the type you want to convert to
-     * @param key the key
+     *
+     * @param <T>  the type you want to convert to
+     * @param key  the key
      * @param type the type you want to get
      * @return converted object
      */
+    @SuppressWarnings("unused")
     public <T> T convertJsonToBeanByKey(String key, Class<T> type) {
-        if (!containsKey(key)) { return null; }
-        try {
-            return getTemplateObjectMapper().readValue(this.<String>get(key), type);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
+        if (containsKey(key)) {
+            try {
+                return getTemplateObjectMapper().readValue(this.<String>get(key), type);
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
         }
+        return null;
     }
 
     /**
@@ -351,25 +377,30 @@ public class WorkDTO extends AbstractMap<String, Object> implements Serializable
      * Create Time: Apr 12, 2016 <br>
      * Create by : xiangyu_li@asdc.com.cn <br>
      *
-     * @param <T> the type you want to convert to
-     * @param key the key
+     * @param <T>  the type you want to convert to
+     * @param key  the key
      * @param type the typ you want convert into
      * @return converted list of object
      */
+    @SuppressWarnings("unused")
     public <T> List<T> converJsonToBeanListByKey(String key, Class<T> type) {
-        if (!containsKey(key)) { return null; }
-        ObjectMapper mapper = getTemplateObjectMapper();
-        try {
-            return mapper.readValue(this.<String>get(key),
+        if (!containsKey(key)) {
+            final ObjectMapper mapper = getTemplateObjectMapper();
+            try {
+                return mapper.readValue(this.<String>get(key),
                     mapper.getTypeFactory().constructCollectionType(List.class, type));
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
         }
+        return null;
     }
 
+    /**
+     * @return the mapper.
+     */
     private ObjectMapper getTemplateObjectMapper() {
-        ObjectMapper mapper = new ObjectMapper().setVisibility(PropertyAccessor.FIELD, Visibility.ANY);
+        final ObjectMapper mapper = new ObjectMapper().setVisibility(PropertyAccessor.FIELD, Visibility.ANY);
         mapper.configure(Feature.ALLOW_NON_NUMERIC_NUMBERS, true);
         mapper.configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true);
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
@@ -378,6 +409,7 @@ public class WorkDTO extends AbstractMap<String, Object> implements Serializable
     }
 
     // ***************** common *******************//
+
     /**
      * Description : get integer by key, this will translate the string into integer <br>
      * Create Time: Apr 12, 2016 <br>
@@ -386,46 +418,48 @@ public class WorkDTO extends AbstractMap<String, Object> implements Serializable
      * @param key the key
      * @return integer, null for is not a integer or bad number formated string
      */
+    @SuppressWarnings("WeakerAccess")
     public Integer getInteger(String key) {
+        Integer result = null;
         if (containsKey(key) && get(key) != null) {
-            Object obj = get(key);
+            final Object obj = get(key);
             if (obj instanceof Integer) {
-                return (Integer) obj;
+                result = (Integer) obj;
             } else {
                 try {
-                    return Integer.parseInt(this.<Object>get(key).toString());
-                } catch (NumberFormatException e) {
-                    return null;
+                    result = Integer.parseInt(this.get(key).toString());
+                } catch (NumberFormatException ex) {
+                    // do nothing
                 }
             }
-        } else {
-            return null;
         }
+        return result;
     }
 
     /**
-     * getLong: get Long by key, this will translate the string to Long <br>
+     * Description: get Long by key, this will translate the string to Long. <br>
      * Create Time: Oct 5, 2015 <br>
      * Create by: xiangyu_li@asdc.com.cn
-     * 
+     *
      * @param key the key
      * @return Long, null for is not a integer or bad number formated string
      */
+    @SuppressWarnings("unused")
     public Long getLong(String key) {
+        Long result = null;
         if (containsKey(key) && get(key) != null) {
-            Object obj = get(key);
+            final Object obj = get(key);
             if (obj instanceof Long) {
-                return (Long) obj;
+                result = (Long) obj;
             } else {
                 try {
-                    return Long.valueOf(this.<Object>get(key).toString());
-                } catch (NumberFormatException e) {
-                    return null;
+                    result = Long.valueOf(this.get(key).toString());
+                } catch (NumberFormatException ex) {
+                    // do nothing
                 }
             }
-        } else {
-            return null;
         }
+        return result;
     }
 
 }

@@ -1,11 +1,22 @@
-/**
- * Project Name : jwaf-dispatcher <br>
- * File Name : SessionMap.java <br>
- * Package Name : com.lee.jwaf.context <br>
- * Create Time : 2016-09-19 <br>
- * Create by : jimmyblylee@126.com <br>
- * Copyright © 2006, 2016, Jimmybly Lee. All rights reserved.
- */
+/* ***************************************************************************
+ * EZ.JWAF/EZ.JCWAP: Easy series Production.
+ * Including JWAF(Java-based Web Application Framework)
+ * and JCWAP(Java-based Customized Web Application Platform).
+ * Copyright (C) 2016-2017 the original author or authors.
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of MIT License as published by
+ * the Free Software Foundation;
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the MIT License for more details.
+ *
+ * You should have received a copy of the MIT License along
+ * with this library; if not, write to the Free Software Foundation.
+ * ***************************************************************************/
+
 package com.lee.jwaf.context;
 
 import java.io.Serializable;
@@ -23,19 +34,23 @@ import javax.servlet.http.HttpSession;
  * ClassName : SessionMap <br>
  * Description : cover {@link HttpSession} into {@link Map} <br>
  * Create Time : 2016-09-19 <br>
- * Create by : jimmyblylee@126.com
+ *
+ * @author jimmyblylee@126.com
  */
 public class SessionMap extends AbstractMap<String, Object> implements Serializable {
 
     private static final long serialVersionUID = -8488285038786064167L;
 
+    /** Map entries. */
     private Set<Map.Entry<String, Object>> entries;
+    /** Http session. */
     private HttpSession session;
+    /** Servlet request. */
     private HttpServletRequest request;
 
     /**
      * Create a new instance of SessionMap.
-     * 
+     *
      * @param request the HttpServletRequest
      */
     public SessionMap(HttpServletRequest request) {
@@ -50,58 +65,70 @@ public class SessionMap extends AbstractMap<String, Object> implements Serializa
      *
      * @see javax.servlet.http.HttpSession#invalidate()
      */
+    @SuppressWarnings("unused")
     public void invalidate() {
-        if (session == null) { return; }
-        synchronized (session) {
-            session.invalidate();
-            session = null;
-            entries = null;
+        if (session != null) {
+            //noinspection SynchronizeOnNonFinalField
+            synchronized (session) {
+                session.invalidate();
+                session = null;
+                entries = null;
+            }
         }
     }
 
     /**
-     * clear: Removes all attributes from the session as well as clears entries in this map.
-     * 
+     * Description: Removes all attributes from the session as well as clears entries in this map.
+     *
      * @see java.util.AbstractMap#clear()
      */
     @Override
     public void clear() {
-        if (session == null) { return; }
-        synchronized (session) {
-            entries = null;
-            Enumeration<String> attributeNamesEnum = session.getAttributeNames();
-            while (attributeNamesEnum.hasMoreElements()) {
-                session.removeAttribute(attributeNamesEnum.nextElement());
+        if (session != null) {
+            //noinspection SynchronizeOnNonFinalField
+            synchronized (session) {
+                entries = null;
+                final Enumeration<String> attributeNamesEnum = session.getAttributeNames();
+                while (attributeNamesEnum.hasMoreElements()) {
+                    session.removeAttribute(attributeNamesEnum.nextElement());
+                }
             }
         }
-
     }
 
     /**
      * Returns a Set of attributes from the http session.
-     * 
+     *
      * @return a Set of attributes from the http session.
      */
     @SuppressWarnings("unchecked")
     @Override
     public Set<java.util.Map.Entry<String, Object>> entrySet() {
-        if (session == null) { return Collections.emptySet(); }
+        if (session == null) {
+            return Collections.emptySet();
+        }
+        //noinspection SynchronizeOnNonFinalField
         synchronized (session) {
             if (entries == null) {
-                entries = new HashSet<Map.Entry<String, Object>>();
-                Enumeration<? extends Object> enumeration = session.getAttributeNames();
+                entries = new HashSet<>();
+                final Enumeration<String> enumeration = session.getAttributeNames();
+                //noinspection Duplicates
                 while (enumeration.hasMoreElements()) {
-                    final String key = enumeration.nextElement().toString();
+                    final String key = enumeration.nextElement();
                     final Object value = session.getAttribute(key);
+                    //noinspection Duplicates
                     entries.add(new Map.Entry<String, Object>() {
                         public boolean equals(Object obj) {
-                            Map.Entry<String, Object> entry = (Map.Entry<String, Object>) obj;
-                            return ((key == null) ? (entry.getKey() == null) : key.equals(entry.getKey()))
-                                    && ((value == null) ? (entry.getValue() == null) : value.equals(entry.getValue()));
+                            return obj instanceof Entry && key.equals(((Entry) obj).getKey())
+                                && value.equals(((Entry) obj).getValue());
                         }
 
                         public int hashCode() {
-                            return ((key == null) ? 0 : key.hashCode()) ^ ((value == null) ? 0 : value.hashCode());
+                            if (key == null || value == null) {
+                                return 0;
+                            } else {
+                                return key.hashCode() ^ value.hashCode();
+                            }
                         }
 
                         public String getKey() {
@@ -125,13 +152,16 @@ public class SessionMap extends AbstractMap<String, Object> implements Serializa
 
     /**
      * Returns the session attribute associated with the given key or <tt>null</tt> if it doesn't exist.
-     * 
+     *
      * @param key the name of the session attribute.
      * @return the session attribute or <tt>null</tt> if it doesn't exist.
      */
     @Override
     public Object get(Object key) {
-        if (session == null) { return null; }
+        if (session == null) {
+            return null;
+        }
+        //noinspection SynchronizeOnNonFinalField
         synchronized (session) {
             return session.getAttribute(key.toString());
         }
@@ -139,8 +169,8 @@ public class SessionMap extends AbstractMap<String, Object> implements Serializa
 
     /**
      * Saves an attribute in the session.
-     * 
-     * @param key the name of the session attribute.
+     *
+     * @param key   the name of the session attribute.
      * @param value the value to set.
      * @return the object that was just set.
      */
@@ -151,9 +181,10 @@ public class SessionMap extends AbstractMap<String, Object> implements Serializa
                 session = request.getSession(true);
             }
         }
+        //noinspection SynchronizeOnNonFinalField
         synchronized (session) {
             entries = null;
-            session.setAttribute(key.toString(), value);
+            session.setAttribute(key, value);
 
             return get(key);
         }
@@ -161,16 +192,19 @@ public class SessionMap extends AbstractMap<String, Object> implements Serializa
 
     /**
      * Removes the specified session attribute.
-     * 
+     *
      * @param key the name of the attribute to remove.
      * @return the value that was removed or <tt>null</tt> if the value was not found (and hence, not removed).
      */
     @Override
     public Object remove(Object key) {
-        if (session == null) { return null; }
+        if (session == null) {
+            return null;
+        }
+        //noinspection SynchronizeOnNonFinalField
         synchronized (session) {
             entries = null;
-            Object value = get(key);
+            final Object value = get(key);
             session.removeAttribute(key.toString());
             return value;
         }
@@ -178,15 +212,18 @@ public class SessionMap extends AbstractMap<String, Object> implements Serializa
 
     /**
      * Checks if the specified session attribute with the given key exists.
-     * 
+     *
      * @param key the name of the session attribute.
      * @return <tt>true</tt> if the session attribute exits or <tt>false</tt> if it doesn't exist.
      */
     @Override
     public boolean containsKey(Object key) {
-        if (session == null) { return false; }
+        if (session == null) {
+            return false;
+        }
+        //noinspection SynchronizeOnNonFinalField
         synchronized (session) {
-            return (session.getAttribute(key.toString()) != null);
+            return session.getAttribute(key.toString()) != null;
         }
     }
 

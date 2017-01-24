@@ -1,11 +1,22 @@
-/**
- * Project Name : jwaf-dispatcher <br>
- * File Name : SessionDTO.java <br>
- * Package Name : com.lee.jwaf.dto <br>
- * Create Time : 2016-09-19 <br>
- * Create by : jimmyblylee@126.com <br>
- * Copyright © 2006, 2016, Jimmybly Lee. All rights reserved.
- */
+/* ***************************************************************************
+ * EZ.JWAF/EZ.JCWAP: Easy series Production.
+ * Including JWAF(Java-based Web Application Framework)
+ * and JCWAP(Java-based Customized Web Application Platform).
+ * Copyright (C) 2016-2017 the original author or authors.
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of MIT License as published by
+ * the Free Software Foundation;
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the MIT License for more details.
+ *
+ * You should have received a copy of the MIT License along
+ * with this library; if not, write to the Free Software Foundation.
+ * ***************************************************************************/
+
 package com.lee.jwaf.dto;
 
 import java.io.Serializable;
@@ -19,14 +30,18 @@ import com.lee.jwaf.token.Token;
  * ClassName : SessionDTO <br>
  * Description : session DTO in each thread <br>
  * Create Time : 2016-09-19 <br>
- * Create by : jimmyblylee@126.com
+ * @author jimmyblylee@126.com
  */
 public class SessionDTO extends AbstractMap<String, Object> implements Serializable, AppConstant {
 
     private static final long serialVersionUID = -4223597068936675755L;
 
-    protected Map<String, Object> map;
+    /** Real value storage map. */
+    private Map<String, Object> map;
 
+    /**
+     * @param session the sessionmap.
+     */
     public SessionDTO(Map<String, Object> session) {
         map = session;
     }
@@ -43,17 +58,16 @@ public class SessionDTO extends AbstractMap<String, Object> implements Serializa
     /**
      * Returns the value to which the specified key is mapped, or {@code null} if this map contains no mapping for the
      * key.
-     * 
-     * <p>
-     * More formally, if this map contains a mapping from a key {@code k} to a value {@code v} such that
+     *
+     * <p>More formally, if this map contains a mapping from a key {@code k} to a value {@code v} such that
      * {@code (key==null ? k==null : key.equals(k))} , then this method returns {@code v}; otherwise it returns
      * {@code null}. (There can be at most one such mapping.)
-     * 
-     * <p>
-     * A return value of {@code null} does not <i>necessarily</i> indicate that the map contains no mapping for the key;
+     *
+     * <p>A return value of {@code null} does not <i>necessarily</i> indicate
+     * that the map contains no mapping for the key;
      * it's also possible that the map explicitly maps the key to {@code null}. The {@link #containsKey containsKey}
      * operation may be used to distinguish these two cases.
-     * 
+     *
      * @param <T> the type which the caller needs
      * @param key the key
      * @return the value
@@ -67,7 +81,7 @@ public class SessionDTO extends AbstractMap<String, Object> implements Serializa
     /**
      * Associates the specified value with the specified key in this map. If the map previously contained a mapping for
      * the key, the old value is replaced.
-     * 
+     *
      * @param key key with which the specified value is to be associated
      * @param value value to be associated with the specified key
      * @return the previous value associated with <tt>key</tt>, or <tt>null</tt> if there was no mapping for
@@ -76,7 +90,7 @@ public class SessionDTO extends AbstractMap<String, Object> implements Serializa
      */
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public Object put(String key, Object value) {
-        return ((Map) map).put(key, value);
+        return map.put(key, value);
     }
 
     /*
@@ -84,7 +98,7 @@ public class SessionDTO extends AbstractMap<String, Object> implements Serializa
      * @see java.util.AbstractMap#putAll(java.util.Map)
      */
     @Override
-    public void putAll(Map<? extends String, ? extends Object> m) {
+    public void putAll(Map<? extends String, ?> m) {
         map.putAll(m);
     }
 
@@ -112,6 +126,7 @@ public class SessionDTO extends AbstractMap<String, Object> implements Serializa
      * Create by : jimmyblylee@126.com <br>
      *
      */
+    @SuppressWarnings("unused")
     public void clearCurrentToken() {
         if (containsKey(CNS_SESSIONDTO.TOKEN_IN_SESSION.toString())) {
             remove(CNS_SESSIONDTO.TOKEN_IN_SESSION.toString());
@@ -125,6 +140,7 @@ public class SessionDTO extends AbstractMap<String, Object> implements Serializa
      *
      * @param token the user token
      */
+    @SuppressWarnings("unused")
     public void setActiveUser(Token token) {
         put(CNS_SESSIONDTO.TOKEN_IN_SESSION.toString(), token);
     }
@@ -136,6 +152,7 @@ public class SessionDTO extends AbstractMap<String, Object> implements Serializa
      *
      * @return user token
      */
+    @SuppressWarnings("unused")
     public Token currentToken() {
         return get(CNS_SESSIONDTO.TOKEN_IN_SESSION.toString());
     }
@@ -147,6 +164,7 @@ public class SessionDTO extends AbstractMap<String, Object> implements Serializa
      *
      * @return true if there is a token in the current thread
      */
+    @SuppressWarnings("unused")
     public boolean hasToken() {
         return containsKey(CNS_SESSIONDTO.TOKEN_IN_SESSION.toString());
     }

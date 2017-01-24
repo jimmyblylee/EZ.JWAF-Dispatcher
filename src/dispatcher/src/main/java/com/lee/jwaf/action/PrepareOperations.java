@@ -1,13 +1,25 @@
-/**
- * Project Name : jwaf-dispatcher <br>
- * File Name : PrepareOperations.java <br>
- * Package Name : com.lee.jwaf.action <br>
- * Create Time : 2016-09-19 <br>
- * Create by : jimmyblylee@126.com <br>
- * Copyright © 2006, 2016, Jimmybly Lee. All rights reserved.
- */
+/* ***************************************************************************
+ * EZ.JWAF/EZ.JCWAP: Easy series Production.
+ * Including JWAF(Java-based Web Application Framework)
+ * and JCWAP(Java-based Customized Web Application Platform).
+ * Copyright (C) 2016-2017 the original author or authors.
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of MIT License as published by
+ * the Free Software Foundation;
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the MIT License for more details.
+ *
+ * You should have received a copy of the MIT License along
+ * with this library; if not, write to the Free Software Foundation.
+ * ***************************************************************************/
+
 package com.lee.jwaf.action;
 
+import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -21,15 +33,23 @@ import com.lee.jwaf.context.ActionContext;
  * ClassName : PrepareOperations <br>
  * Description : prepare operations <br>
  * Create Time : 2016-09-19 <br>
- * Create by : jimmyblylee@126.com
+ * @author jimmyblylee@126.com
  */
+@SuppressWarnings("WeakerAccess")
 public final class PrepareOperations {
 
-    private DispatchExecuter dispatchExecuter;
+    /** The dispatcher execurtor. */
+    private DispatchExecutor dispatchExecutor;
+    /** The servlet Context. */
     private ServletContext servletContext;
 
-    public PrepareOperations(DispatchExecuter dispatchExecuter, ServletContext servletContext) {
-        this.dispatchExecuter = dispatchExecuter;
+    /**
+     *  Default constructor.
+     * @param dispatchExecutor the dispatcher executor
+     * @param servletContext the servlet context
+     */
+    public PrepareOperations(DispatchExecutor dispatchExecutor, ServletContext servletContext) {
+        this.dispatchExecutor = dispatchExecutor;
         this.servletContext = servletContext;
     }
 
@@ -45,13 +65,13 @@ public final class PrepareOperations {
      */
     public ActionContext createActionContext(HttpServletRequest request, HttpServletResponse response,
             Map<String, Object> workDTO) {
-        ActionContext ctx;
-        ActionContext oldContext = ActionContext.getContext();
+        final ActionContext ctx;
+        final ActionContext oldContext = ActionContext.getContext();
         if (oldContext != null) {
             /* thread will not shut down sometimes if the target is singleton, this is prepare for this */
-            ctx = new ActionContext(new HashMap<String, Object>(oldContext.getContextMap()));
+            ctx = new ActionContext(new HashMap<>(oldContext.getContextMap()));
         } else {
-            ctx = dispatchExecuter.createActionContext(request, response, servletContext, workDTO);
+            ctx = dispatchExecutor.createActionContext(request, response, servletContext, workDTO);
         }
         ActionContext.setContext(ctx);
         return ctx;
@@ -64,7 +84,7 @@ public final class PrepareOperations {
      *
      */
     public void assignDispatcherToThread() {
-        DispatchExecuter.setInstance(dispatchExecuter);
+        DispatchExecutor.setInstance(dispatchExecutor);
     }
 
     /**
@@ -79,8 +99,8 @@ public final class PrepareOperations {
         try {
             request.setCharacterEncoding("UTF-8");
             response.setLocale(request.getLocale());
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (UnsupportedEncodingException ex) {
+            ex.printStackTrace();
         }
     }
 
@@ -92,6 +112,6 @@ public final class PrepareOperations {
      */
     public void cleanup() {
         ActionContext.setContext(null);
-        DispatchExecuter.setInstance(null);
+        DispatchExecutor.setInstance(null);
     }
 }

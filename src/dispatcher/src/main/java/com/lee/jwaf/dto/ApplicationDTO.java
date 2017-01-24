@@ -1,11 +1,22 @@
-/**
- * Project Name : jwaf-dispatcher <br>
- * File Name : ApplicationDTO.java <br>
- * Package Name : com.lee.jwaf.dto <br>
- * Create Time : 2016-09-18 <br>
- * Create by : jimmyblylee@126.com <br>
- * Copyright © 2006, 2016, Jimmybly Lee. All rights reserved.
- */
+/* ***************************************************************************
+ * EZ.JWAF/EZ.JCWAP: Easy series Production.
+ * Including JWAF(Java-based Web Application Framework)
+ * and JCWAP(Java-based Customized Web Application Platform).
+ * Copyright (C) 2016-2017 the original author or authors.
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of MIT License as published by
+ * the Free Software Foundation;
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the MIT License for more details.
+ *
+ * You should have received a copy of the MIT License along
+ * with this library; if not, write to the Free Software Foundation.
+ * ***************************************************************************/
+
 package com.lee.jwaf.dto;
 
 import java.io.Serializable;
@@ -17,17 +28,18 @@ import java.util.Set;
  * ClassName : ApplicationDTO <br>
  * Description : application dto in application <br>
  * Create Time : 2016-09-18 <br>
- * Create by : jimmyblylee@126.com
+ *
+ * @author jimmyblylee@126.com
  */
 public class ApplicationDTO extends AbstractMap<String, Object> implements Serializable {
 
     private static final long serialVersionUID = -1062805166856740596L;
-
-    protected Map<String, Object> map;
+    /** Real storage of values. */
+    private Map<String, Object> map;
 
     /**
      * Create a new instance of ApplicationDTO.
-     * 
+     *
      * @param application the application map
      */
     public ApplicationDTO(Map<String, Object> application) {
@@ -46,23 +58,22 @@ public class ApplicationDTO extends AbstractMap<String, Object> implements Seria
     /**
      * Returns the value to which the specified key is mapped, or {@code null} if this map contains no mapping for the
      * key.
-     * 
-     * <p>
-     * More formally, if this map contains a mapping from a key {@code k} to a value {@code v} such that
+     *
+     * <p>More formally, if this map contains a mapping from a key {@code k} to a value {@code v} such that
      * {@code (key==null ? k==null : key.equals(k))} , then this method returns {@code v}; otherwise it returns
      * {@code null}. (There can be at most one such mapping.)
-     * 
-     * <p>
-     * A return value of {@code null} does not <i>necessarily</i> indicate that the map contains no mapping for the key;
+     *
+     * <p>A return value of {@code null} does not <i>necessarily</i> indicate that the map contains no mapping for
+     * the key;
      * it's also possible that the map explicitly maps the key to {@code null}. The {@link #containsKey containsKey}
      * operation may be used to distinguish these two cases.
-     * 
+     *
      * @param <T> the type which the caller needs
      * @param key the key
      * @return the value
      * @see #put(Object, Object)
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "unused"})
     public <T> T get(String key) {
         return (T) map.get(key);
     }
@@ -70,16 +81,16 @@ public class ApplicationDTO extends AbstractMap<String, Object> implements Seria
     /**
      * Associates the specified value with the specified key in this map. If the map previously contained a mapping for
      * the key, the old value is replaced.
-     * 
-     * @param key key with which the specified value is to be associated
+     *
+     * @param key   key with which the specified value is to be associated
      * @param value value to be associated with the specified key
      * @return the previous value associated with <tt>key</tt>, or <tt>null</tt> if there was no mapping for
-     *         <tt>key</tt>. (A <tt>null</tt> return can also indicate that the map previously associated <tt>null</tt>
-     *         with <tt>key</tt>.)
+     *     <tt>key</tt>. (A <tt>null</tt> return can also indicate that the map previously associated <tt>null</tt>
+     *     with <tt>key</tt>.)
      */
-    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @SuppressWarnings({"unchecked", "rawtypes"})
     public Object put(String key, Object value) {
-        return ((Map) map).put(key, value);
+        return map.put(key, value);
     }
 
     /*
@@ -87,7 +98,7 @@ public class ApplicationDTO extends AbstractMap<String, Object> implements Seria
      * @see java.util.AbstractMap#putAll(java.util.Map)
      */
     @Override
-    public void putAll(Map<? extends String, ? extends Object> m) {
+    public void putAll(Map<? extends String, ?> m) {
         map.putAll(m);
     }
 
