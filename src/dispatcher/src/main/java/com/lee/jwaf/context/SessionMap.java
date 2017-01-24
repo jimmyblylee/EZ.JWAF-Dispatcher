@@ -68,8 +68,7 @@ public class SessionMap extends AbstractMap<String, Object> implements Serializa
     @SuppressWarnings("unused")
     public void invalidate() {
         if (session != null) {
-            //noinspection SynchronizeOnNonFinalField
-            synchronized (session) {
+            synchronized (this) {
                 session.invalidate();
                 session = null;
                 entries = null;
