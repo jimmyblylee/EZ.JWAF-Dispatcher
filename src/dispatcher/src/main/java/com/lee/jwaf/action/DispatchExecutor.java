@@ -89,7 +89,7 @@ public final class DispatchExecutor {
      * @throws AppException many cases
      */
     @SuppressWarnings("WeakerAccess")
-    public void serviceAction(HttpServletRequest request, HttpServletResponse response) throws Exception, AppException {
+    public void serviceAction(HttpServletRequest request, HttpServletResponse response) throws Exception {
         final WorkDTO dto = ActionContext.getContext().getWorkDTO();
 
         final String controllerName = dto.getController();
@@ -134,8 +134,12 @@ public final class DispatchExecutor {
             // CSOFF: IllegalCatch
         } catch (Exception ex) {
             // CSON: IllegalCatch
-            throw createEx("ERR_DISPATCHER_001/DispatchExecutor.canNotInvok", null,
-                bean.getClass().getName(), method.getName());
+            if (AppException.class.isInstance(ex)) {
+                throw ex;
+            } else {
+                throw createEx("ERR_DISPATCHER_001/DispatchExecutor.canNotInvok", null,
+                    bean.getClass().getName(), method.getName());
+            }
         } finally {
             log.debug(method.getName() + " end");
         }
