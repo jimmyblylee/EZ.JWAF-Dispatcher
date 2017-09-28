@@ -128,7 +128,7 @@ public final class DispatchExecutor {
                 dto.setWarn(errCode, Msg.msg(BUNDLE_NAME, msgCode, null));
                 log.warn(Msg.msg(BUNDLE_NAME, "ERR_ACCESS_DENIED", null));
             } else {
-                throw dto.setIssue(createEx("ERR_DISPATCHER_001/DispatchExecutor.unkownBzIssue", realCause,
+                throw dto.setIssue(createEx("ERR_UNKNOWN_001/DispatchExecutor.unknownBzIssue", realCause,
                     bean.getClass().getName(), method.getName()));
             }
             // CSOFF: IllegalCatch
@@ -137,7 +137,7 @@ public final class DispatchExecutor {
             if (AppException.class.isInstance(ex)) {
                 throw ex;
             } else {
-                throw createEx("ERR_DISPATCHER_001/DispatchExecutor.canNotInvok", null,
+                throw createEx("ERR_UNKNOWN_001/DispatchExecutor.canNotInvoke", null,
                     bean.getClass().getName(), method.getName());
             }
         } finally {

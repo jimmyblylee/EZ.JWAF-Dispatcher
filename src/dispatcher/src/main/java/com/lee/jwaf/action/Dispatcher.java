@@ -19,6 +19,7 @@
 
 package com.lee.jwaf.action;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Map;
@@ -40,7 +41,7 @@ import org.springframework.web.context.ServletContextAware;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lee.jwaf.dto.AppConstant;
 import com.lee.jwaf.exception.AppException;
-import com.lee.jwaf.exception.WarnException;
+import com.lee.jwaf.message.Messages;
 
 /**
  * ClassName : Dispatcher <br>
@@ -85,8 +86,11 @@ public class Dispatcher implements ServletContextAware {
             // CSOFF: IllegalCatch
         } catch (Throwable ex) {
             // CSON: IllegalCatch
-            if (ex instanceof AppException && !WarnException.class.isInstance(ex)) {
+            if (ex instanceof AppException) {
                 log.error("{}: {}", ((AppException) ex).getErrCode(), ex.getMessage());
+                if ("ERR_UNKNOWN_001".equals(((AppException) ex).getErrCode())) {
+                    log.error("Error Stacking:", ex.getCause());
+                }
             } else {
                 log.error("Error Stacking:", ex);
             }
@@ -137,16 +141,34 @@ public class Dispatcher implements ServletContextAware {
             final ObjectMapper mapper = new ObjectMapper();
             final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
             mapper.setDateFormat(dateFormat);
-            mapper.writeValue(response.getOutputStream(), workDTO);
+
+            // clean proxy
+            for (Map.Entry entry: workDTO.entrySet()) {
+                ProxyStripper.cleanFromProxies(entry.getValue());
+            }
+            final ByteArrayOutputStream responseBOS = new ByteArrayOutputStream();
+            mapper.writeValue(responseBOS, workDTO);
+            response.getOutputStream().write(responseBOS.toByteArray());
             // CSOFF: IllegalCatch
         } catch (Exception ex) {
             // CSON: IllegalCatch
+            log.error(ex.getMessage(), ex);
+            try {
+                response.setStatus(HttpServletResponse.SC_EXPECTATION_FAILED);
+                workDTO.clear();
+                workDTO.put("errLevel", "warning");
+                workDTO.put("errMsg",
+                    Messages.Msg.msg("dispatcher", "ERR_UNKNOWN_001/Dispatcher.canNotResponse", null));
+                new ObjectMapper().writeValue(response.getOutputStream(), workDTO);
+            } catch (IOException exIO) {
+                log.error(exIO.getMessage(), exIO);
+            }
+        } finally {
             try {
                 response.flushBuffer();
             } catch (IOException exIO) {
-                log.error(ex.getMessage(), exIO);
+                log.error(exIO.getMessage(), exIO);
             }
-            log.error(ex.getMessage(), ex);
         }
     }
 
@@ -157,4 +179,5 @@ public class Dispatcher implements ServletContextAware {
     public void setServletContext(ServletContext servletContext) {
         this.servletContext = servletContext;
     }
+
 }
